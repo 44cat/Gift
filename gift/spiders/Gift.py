@@ -8,16 +8,17 @@ from gift.items import GiftItem
 class GiftSpider(scrapy.Spider):
     name = "Gift"
     allowed_domains = ["liwushuo.com"]
-    start_urls = ["http://www.liwushuo.com/posts/1048001"]
-    # base_url = "http://www.liwushuo.com/posts/"
+    # start_urls = ["http://www.liwushuo.com/posts/1048001"]
+    base_url = "http://www.liwushuo.com/posts/"
     # rules = (
     #     Rule(LinkExtractor(allow='http://www.liwushuo.com/posts/\d{1,7}'),callback='parse',follow=True),
     # )
 
-    # def start_requests(self):
-    #     for i in range(1048001,1048003):
-    #         url = self.base_url + str(i)
-    #         yield Request(url,self.parse)
+    def start_requests(self):
+        for i in range(1048001,1048005):
+            url = self.base_url + str(i)
+            yield Request(url,self.parse)
+
 
     def parse(self, response):
         for l in response.xpath("//div[@class='content']"):
@@ -34,4 +35,6 @@ class GiftSpider(scrapy.Spider):
             item['price'] = l.xpath("//div/p[@class='item-info-price']/span/text()").extract()
             item['LikeNum'] = l.xpath("//div/p[@class='item-like-info']/text()").extract()
             yield item
+        yield Request('http://www.liwushuo.com/posts/1048001', callback=self.parse)
+
 
